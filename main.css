@@ -91,7 +91,8 @@ h1, h3, p {
 
 #results {
   flex: 1;
-  height: 100%;
+
+
   overflow-y: scroll;
   padding-left: 10px;
   font-family: 'Titillium Web', sans-serif;
@@ -100,7 +101,19 @@ h1, h3, p {
 #parent {
   height: 100%;
   display: flex;
+  margin: 0;
+  padding: 0;
 }
+
+#child {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  width: 40%;
+}
+
+
 
 .resultDiv {
   border-style: solid;
@@ -114,3 +127,32 @@ h1, h3, p {
   color: navy;
 
 }
+
+#right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+        height: 50%;
+
+        overflow-y: scroll;
+        margin-right: 0;
+
+      }
+
+      /*#right-panel select, #right-panel input {
+        font-size: 15px;
+      }
+
+      #right-panel select {
+        width: 100%;
+      }
+
+      #right-panel i {
+        font-size: 12px;
+      }
+      #right-panel {
+        height: 100%;
+        float: right;
+        width: 390px;
+        overflow: auto;
+      }*/

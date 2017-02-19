@@ -3,6 +3,9 @@ pos = {
   lng: -122.4194
 };
 
+var directionsService;
+var directionsDisplay;
+
 
 function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -13,6 +16,11 @@ function initAutocomplete() {
 
   //var directionsService = new google.maps.DirectionsService;
 
+  directionsDisplay = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('right-panel'));
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -119,8 +127,11 @@ function loadResults(numResults, placeResults) {
   document.getElementById("results").innerHTML = "<h1>Optimized Place Search</h1> <h3>Find places you can get to when they're open</h3>";
   console.log(numResults);
   for (i = 0; i < numResults; i++) {
-    var p1 = document.createElement("h3");
+    var p1 = document.createElement("button");
     p1.setAttribute("id", String(i));
+
+
+
     var p2 = document.createElement("p");
     p2.setAttribute("id", "description_"+String(i));
     var resultDiv = document.createElement("div");
@@ -222,6 +233,7 @@ function loadResults(numResults, placeResults) {
     }
 
 
+
     console.log("http://www.mapquestapi.com/directions/v2/route?key=0HG8b7rdqIkwZdFNGenpycewpmvze9KB&from=" + pos.lat + "," + pos.lng + "&to=" + placeResults[i].geometry.location.lat() + "," + placeResults[i].geometry.location.lng() + "&callback=renderNarrative");
 
     console.log(travelTimeHours + " " + travelTimeMinutes);
@@ -232,6 +244,13 @@ function loadResults(numResults, placeResults) {
     }
 
     eta = String(Math.floor(projectedTime/100)) + ":" + etaMinutes;
+    if (parseInt(etaMinutes) >= 60) {
+      etaMinutes = String(parseInt(etaMinutes)-60);
+      eta = String(Math.floor(projectedTime/100)+1) + ":" + etaMinutes;
+      if ((Math.floor(projectedTime/100)+1)>= 24) {
+        eta = String(Math.floor(projectedTime/100)+1-24) + ":" + etaMinutes;
+      }
+    }
     console.log(eta);
 
     var willMakeItData = document.createElement("p");
@@ -275,9 +294,16 @@ function loadResults(numResults, placeResults) {
     document.getElementById("description_"+String(i)).innerHTML = placeResults[i].formatted_address;
     document.getElementById("openNow_"+String(i)).innerHTML = open;
     document.getElementById("travelTime_"+String(i)).innerHTML = travelTimeHours + " hr " + travelTimeMinutes + " min";
-    document.getElementById("eta_"+String(i)).innerHTML = "Estimated Time of Arrival: " + eta;
+    document.getElementById("eta_"+String(i)).innerHTML = "Best-case Estimated Time of Arrival: " + eta;
     document.getElementById("willMakeIt_"+String(i)).innerHTML = willMakeIt;
 
+    placeLat = placeResults[i].geometry.location.lat();
+    placeLng = placeResults[i].geometry.location.lng();
+    placeAddress = placeResults[i].formatted_address;
+
+    document.getElementById(String(i)).addEventListener("click", function() {
+        getDirections(directionsService, directionsDisplay, pos.lat, pos.lng, placeAddress)
+    }, false);
 
     if (flag) {
       document.getElementById("div_"+String(i)).appendChild(businessHours);
@@ -291,6 +317,25 @@ function loadResults(numResults, placeResults) {
   }
 
 }
+
+function getDirections(directionsService, directionsDisplay, startLat, startLng, endPlace) {
+        var start = {lat: startLat, lng: startLng};
+        var end = endPlace;
+        directionsService.route({
+          origin: start,
+          destination: end,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+
+      }
+
+
 
 function getJSON(url) {
     var response;

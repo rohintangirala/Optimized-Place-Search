@@ -15,12 +15,18 @@
 
       <div id="map"></div>
       <script src="map.js"></script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFWoqDcUxSKzdsN3BCbKHWSRT86m8OQo&libraries=places&callback=initAutocomplete"
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFWoqDcUxSKzdsN3BCbKHWSRT86m8OQo&libraries=places,geometry&callback=initAutocomplete"
          async defer></script>
-      <div id="results">
-        <h1>Optimized Place Search</h1>
-        <h3>Find places you can get to when they're open</h3>
+      <div id="child">
+
+        <div id="results">
+          <h1>Optimized Place Search</h1>
+          <h3>Find places you can get to when they're open</h3>
+        </div>
+        <div id="right-panel"></div>
       </div>
+
     </div>
+
   </body>
 </html>
