@@ -1,2 +1,2 @@
 # Optimized-Place-Search
-@ CodeDay Bay Area
+Find places you can get to when they're open
