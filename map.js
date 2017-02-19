@@ -150,6 +150,11 @@ function loadResults(numResults, placeResults) {
     catch(e){
       closeHours='No work time';
     }
+    flag1 = true;
+    if ((openHours!="No work time")&&(closeHours=="No work time")) {
+      closeHours = "0000";
+      flag1 = false;
+    }
     flag = true;
     if ((openHours=="No work time")&&(closeHours=="No work time")) {
       flag = false;
@@ -159,7 +164,9 @@ function loadResults(numResults, placeResults) {
       var businessHours = document.createElement("p");
       businessHours.setAttribute("id", "busHours_"+String(i));
     }
-
+    if (!flag1) {
+      closeHours = "2400";
+    }
     if (closeHours < openHours) {
       closeHours = parseInt(closeHours) + 2400;
     }
@@ -203,7 +210,7 @@ function loadResults(numResults, placeResults) {
       projectedTime = projectedTime - 2400;
     }
     if (flag) {
-      if ((projectedTime >= openHours) && (projectedTime <= closeHours)) {
+      if ((projectedTime >= parseInt(openHours)) && (projectedTime <= parseInt(closeHours))) {
         console.log(projectedTime + " YOU CAN GO");
         willMakeIt = "You will arrive during business hours";
       } else {
@@ -224,7 +231,7 @@ function loadResults(numResults, placeResults) {
       etaMinutes = "0" + String(projectedTime%100);
     }
 
-    eta = String(projectedTime/100-((projectedTime%100)/100)) + ":" + etaMinutes;
+    eta = String(Math.floor(projectedTime/100)) + ":" + etaMinutes;
     console.log(eta);
 
     var willMakeItData = document.createElement("p");
@@ -235,6 +242,24 @@ function loadResults(numResults, placeResults) {
       willMakeItData.setAttribute("style", "color: red;");
     }
 
+    var image = document.createElement("img");
+    image.setAttribute("id", "image_"+String(i));
+    try  {
+      imageUrl = placeResults[i].photos[0].getUrl();
+    } catch (e) {
+      imageUrl = "error";
+    }
+    if (imageUrl != "error") {
+      imgFlag = true;
+    } else {
+      imgFlag = false;
+    }
+    if (imgFlag) {
+      image.setAttribute("src", imageUrl);
+    }
+
+
+
     document.getElementById("results").appendChild(resultDiv);
     document.getElementById("div_"+String(i)).appendChild(p1);
     document.getElementById("div_"+String(i)).appendChild(p2);
@@ -243,6 +268,7 @@ function loadResults(numResults, placeResults) {
     document.getElementById("div_"+String(i)).appendChild(etaTime);
     document.getElementById("div_"+String(i)).appendChild(willMakeItData);
     document.getElementById("div_"+String(i)).appendChild(document.createElement("p"));
+    document.getElementById("div_"+String(i)).appendChild(image);
 
 
     document.getElementById(String(i)).innerHTML = placeResults[i].name;
@@ -252,9 +278,15 @@ function loadResults(numResults, placeResults) {
     document.getElementById("eta_"+String(i)).innerHTML = "Estimated Time of Arrival: " + eta;
     document.getElementById("willMakeIt_"+String(i)).innerHTML = willMakeIt;
 
+
     if (flag) {
       document.getElementById("div_"+String(i)).appendChild(businessHours);
       document.getElementById("busHours_"+String(i)).innerHTML = "Hours: " + openHoursFormatted + " to " + closeHoursFormatted;
+    }
+
+    if (imgFlag) {
+      console.log(imageUrl);
+      document.getElementById("image_"+String(i)).innerHTML = image;
     }
   }
 
